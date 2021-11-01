@@ -1,21 +1,21 @@
-export const assert = <T extends any>(value: T | undefined | null, msg?: string): T => {
+export const assert = <T>(value: T | undefined | null, msg?: string): T => {
 	if (value == null) {
-		throw new Error(msg || 'Value is missing');
+		throw new Error(msg || 'Value is missing')
 	}
 
-	return value;
-};
+	return value
+}
 
 export const strToNumber = (str: string | undefined): number | undefined => {
 	if (!str) {
-		return undefined;
+		return undefined
 	}
 
-	const num = parseInt(str, 10);
+	const num = parseInt(str, 10)
 
 	if (isNaN(num)) {
-		return undefined;
+		return undefined
 	}
 
-	return num;
-};
+	return num
+}

@@ -1,6 +1,6 @@
-import { resolveBaseConfig } from './base-config';
-import { logProxyConfig, ProxyConfig, resolveProxyConfig } from './proxy-config';
-import { readConfigFile } from '../utils/config-utils';
+import { readConfigFile } from '../utils/config-utils'
+import { resolveBaseConfig } from './base-config'
+import { logProxyConfig, ProxyConfig, resolveProxyConfig } from './proxy-config'
 
 export interface AppConfig {
 	port: number;
@@ -8,20 +8,20 @@ export interface AppConfig {
 }
 
 export function createAppConfig(): AppConfig {
-	const baseConfig = resolveBaseConfig();
+	const baseConfig = resolveBaseConfig()
 
 	const jsonConfig = baseConfig.jsonConfig
 		? JSON.parse(baseConfig.jsonConfig)
-		: readConfigFile(baseConfig.jsonConfigFilePath);
+		: readConfigFile(baseConfig.jsonConfigFilePath)
 
 	return {
 		port: baseConfig.port,
 		proxy: resolveProxyConfig(jsonConfig),
-	};
+	}
 }
 
 export function logAppConfig(appConfig: AppConfig): void {
-	console.info(`Base config: port=${appConfig.port}`);
+	console.info(`Base config: port=${appConfig.port}`)
 
-	logProxyConfig(appConfig.proxy);
+	logProxyConfig(appConfig.proxy)
 }

@@ -1,27 +1,27 @@
-import express from 'express';
+import express from 'express'
 
-import { corsMiddleware } from './middleware/cors-middleware';
-import { registerProxies } from './middleware/register-proxies';
-import { createAppConfig, logAppConfig } from './config/app-config-resolver';
+import { createAppConfig, logAppConfig } from './config/app-config-resolver'
+import { corsMiddleware } from './middleware/cors-middleware'
+import { registerProxies } from './middleware/register-proxies'
 
-const app: express.Application = express();
+const app: express.Application = express()
 
 async function startServer() {
-	console.info('Starting dev proxy...');
+	console.info('Starting dev proxy...')
 
-	const appConfig = createAppConfig();
+	const appConfig = createAppConfig()
 
-	logAppConfig(appConfig);
+	logAppConfig(appConfig)
 
-	app.set('trust proxy', 1);
+	app.set('trust proxy', 1)
 
-	app.use(corsMiddleware());
+	app.use(corsMiddleware())
 
-	registerProxies(app, appConfig);
+	registerProxies(app, appConfig)
 
-	app.listen(appConfig.port, () => console.info(`Server started successfully on port ${appConfig.port}`));
+	app.listen(appConfig.port, () => console.info(`Server started successfully on port ${appConfig.port}`))
 }
 
 startServer().catch((err) => {
-	console.error('Failed to start server', err);
-});
+	console.error('Failed to start server', err)
+})

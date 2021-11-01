@@ -1,13 +1,13 @@
-import { existsSync, readFileSync } from "fs";
+import { existsSync, readFileSync } from 'fs'
 
 export interface JsonConfig {
-	[key: string]: any;
+	[key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export function readConfigFile(configFilePath: string): JsonConfig | undefined {
-	if (!existsSync(configFilePath)) return undefined;
+	if (!existsSync(configFilePath)) return undefined
 
-	const configStr = readFileSync(configFilePath).toString();
+	const configStr = readFileSync(configFilePath).toString()
 
-	return JSON.parse(configStr);
+	return JSON.parse(configStr)
 }
