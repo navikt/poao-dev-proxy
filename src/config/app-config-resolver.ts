@@ -2,20 +2,25 @@ import { readConfigFile } from '../utils/config-utils'
 import { resolveBaseConfig } from './base-config'
 import { logProxyConfig, ProxyConfig, resolveProxyConfig } from './proxy-config'
 
+const DEFAULT_JSON_CONFIG_FILE_PATH = '/app/config/config.js'
+
 export interface AppConfig {
 	port: number;
 	proxy: ProxyConfig;
 }
 
 export function createAppConfig(): AppConfig {
-	const baseConfig = resolveBaseConfig()
+	const jsonConfigEnv = process.env.JSON_CONFIG
+	const jsonConfigFilePath = process.env.JSON_CONFIG_FILE_PATH || DEFAULT_JSON_CONFIG_FILE_PATH
 
-	const jsonConfig = baseConfig.jsonConfig
-		? JSON.parse(baseConfig.jsonConfig)
-		: readConfigFile(baseConfig.jsonConfigFilePath)
+	const jsonConfig = jsonConfigEnv
+		? JSON.parse(jsonConfigEnv)
+		: readConfigFile(jsonConfigFilePath)
+
+	const baseConfig = resolveBaseConfig(jsonConfig)
 
 	return {
-		port: baseConfig.port,
+		...baseConfig,
 		proxy: resolveProxyConfig(jsonConfig),
 	}
 }
