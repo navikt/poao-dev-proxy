@@ -1,8 +1,10 @@
 import { Application } from 'express'
-import { createProxyMiddleware } from 'http-proxy-middleware'
+import { createProxyMiddleware, responseInterceptor } from 'http-proxy-middleware'
 
 import { AppConfig } from '../config/app-config-resolver'
 import { Proxy } from '../config/proxy-config'
+import * as http from 'http';
+import type * as httpProxy from 'http-proxy';
 
 export function registerProxies(app: Application, appConfig: AppConfig) {
 	const contextPath = '/'
@@ -15,19 +17,29 @@ export function registerProxies(app: Application, appConfig: AppConfig) {
 function createProxy(contextPath: string, proxy: Proxy) {
 	return createProxyMiddleware(contextPath, {
 		target: proxy.toUrl,
-		logLevel: 'debug',
-		logProvider: () => console,
+		logLevel: 'error',
 		changeOrigin: true,
-		// onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, res: http.ServerResponse, options: httpProxy.ServerOptions) => {
-		// 	console.info(`${JSON.stringify(req.headers)}`)
-		// 	console.info('req url', req.url)
-		// 	console.info(`Proxy req: ${JSON.stringify(proxyReq.getHeaders())}`)
-		// },
-		// onProxyRes: (proxyRes: http.IncomingMessage, req: http.IncomingMessage, res: http.ServerResponse) => {
-		// 	console.log('proxy res status', proxyRes.statusCode)
-		// },
-		// onError: (error, request, response) => {
-		// 	console.error(`onError, error=${error.message}`)
-		// },
+		selfHandleResponse: true,
+		pathRewrite: proxy.fromContextPath
+			? {
+				[`^${proxy.fromContextPath}`]: '',
+			}
+			: undefined,
+		onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, _res: http.ServerResponse, _options: httpProxy.ServerOptions) => {
+			console.log(`\nProxying request ${proxyReq.method} ${proxyReq.path}`)
+		},
+		onProxyRes: responseInterceptor(async (responseBuffer: Buffer, proxyRes: http.IncomingMessage, _req: http.IncomingMessage, _res: http.ServerResponse) => {
+			const body = responseBuffer.toString('utf8');
+
+			console.log(`Proxy response ${proxyRes.statusCode} ${_res.req.method} ${_res.req.url}  \n======================================\n${body}\n======================================\n`)
+
+			return responseBuffer;
+		}),
+		onError: (error, req, res) => {
+			console.error(`Failed to proxy request: request=${req.url} error=${error.message}`)
+
+			res.writeHead(500, {'Content-Type': 'text/plain'});
+			res.end('Failed to proxy request');
+		},
 	})
 }

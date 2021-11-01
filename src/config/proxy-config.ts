@@ -6,14 +6,15 @@ export interface ProxyConfig {
 
 export interface Proxy {
 	fromPath: string;
+	fromContextPath?: string;
 	toUrl: string;
 }
 
 export const logProxyConfig = (proxyConfig: ProxyConfig): void => {
 	proxyConfig.proxies.forEach((proxy) => {
-		const { fromPath, toUrl } = proxy
+		const { fromPath, toUrl, fromContextPath } = proxy
 
-		console.info(`Proxy config entry: fromPath=${fromPath} toUrl=${toUrl}`)
+		console.info(`Proxy config entry: ${fromPath} -> ${toUrl} ${fromContextPath ? '. Context path: ' + fromContextPath : ''}`)
 	})
 }
 

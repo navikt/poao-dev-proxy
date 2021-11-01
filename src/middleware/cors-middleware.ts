@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
 
+const corsAllowHeaders = [
+	'nav-consumer-id'
+];
+
 export function corsMiddleware(): (req: Request, res: Response, next: NextFunction) => void {
 	return (req: Request, res: Response, next: NextFunction): void => {
 
@@ -9,16 +13,10 @@ export function corsMiddleware(): (req: Request, res: Response, next: NextFuncti
 		if (req.method === 'OPTIONS') {
 			res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, POST, PATCH, DELETE')
 			res.setHeader('Access-Control-Max-Age', '7200')
-			res.setHeader('Access-Control-Allow-Headers', getCorsAllowHeaders(req).join(', '))
+			res.setHeader('Access-Control-Allow-Headers', corsAllowHeaders.join(', '))
+			res.sendStatus(200)
+		} else {
+			next()
 		}
-
-		next()
 	}
-}
-
-function getCorsAllowHeaders(req: Request): string[] {
-	const unnecessaryHeaders = [ 'origin', 'cookie' ]
-
-	return Object.keys(req.headers)
-		.filter(header => !unnecessaryHeaders.includes(header))
 }

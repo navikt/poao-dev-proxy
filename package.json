@@ -4,10 +4,10 @@
   "description": "cors-proxy",
   "main": "src/server.ts",
   "scripts": {
-    "start": "ts-node src/server.ts",
+    "start": "dotenv -e .env ts-node src/server.ts",
     "build": "tsc",
-    "prettier": "prettier --write 'src/**/*.ts'",
     "test": "jest",
+    "prettier": "prettier --write 'src/**/*.ts'",
     "lint": "eslint --max-warnings=0 'src/**/*.ts'",
     "lint:fix": "eslint --fix 'src/**/*.ts'"
   },
@@ -37,6 +37,7 @@
     "@types/node": "^16.6.2",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.2.0",
+    "dotenv-cli": "^4.1.0",
     "eslint": "^8.1.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "^7.0.1",
