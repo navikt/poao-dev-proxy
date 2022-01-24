@@ -20,11 +20,9 @@ function createProxy(contextPath: string, proxy: Proxy) {
 		logLevel: 'error',
 		changeOrigin: true,
 		selfHandleResponse: true,
-		pathRewrite: proxy.fromContextPath
-			? {
-				[`^${proxy.fromContextPath}`]: '',
-			}
-			: undefined,
+		pathRewrite: proxy.preserveFromPath
+			? undefined
+			: { [`^${proxy.fromPath}`]: '' },
 		onProxyReq: (proxyReq: http.ClientRequest, req: http.IncomingMessage, _res: http.ServerResponse, _options: httpProxy.ServerOptions) => {
 			console.log(`\nProxying request ${proxyReq.method} ${proxyReq.path}`)
 		},

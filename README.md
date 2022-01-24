@@ -11,24 +11,21 @@ Den viktigste delen av configen er proxy endepunktene som man setter opp. Proxy 
 
 - **fromPath** -> (Required) Hvilken path som proxyen skal matche. Alle requests som starter med **fromPath** vil bli matchet av configen.
 - **toUrl** -> (Required) Hvilken URL som proxy requestet skal sendes til. **fromPath** vil bli appendet til **toUrl** før requestet blir sendt videre
-- **fromContextPath** -> (Optional) Brukes for å sette hva i **fromPath** som regnes som en del av context path.
- Context path vil ikke bli appendet til **toUrl** når proxy requestet blir sendt videre.
+- **preserveFromPath** -> (Optional) Hvis satt til **true** så vil `fromPath` bli lagt til forran `toUrl`. Default er **false**
  
 F.eks med følgende proxy endepunkt: 
-`{ "fromPath": "/my-path/test", "toUrl": "https://my-app.dev.intern.nav.no/proxy", "fromContextPath": "/my-path" }`
+`{ "fromPath": "/my-path/test", "toUrl": "https://my-app.dev.intern.nav.no/proxy", "preserveFromPath": false }`
 
 og det blir sendt et request til proxyen som ser slik ut: `http://localhost:<port>/my-path/test/hello/world`, 
-så vil URLen proxyet videre til `https://my-app.dev.intern.nav.no/proxy/test/hello/world`.
+så vil URLen proxyet videre til `https://my-app.dev.intern.nav.no/proxy/hello/world`.
 
 Eksempel JSON config:
 ```json
 {
   "port": 8080,
-  "proxy": {
-      "proxies": [
-        { "fromPath": "/my-path/test", "toUrl": "https://my-app.dev.intern.nav.no", "fromContextPath": "/my-path" }
-      ]
-   }
+  "proxies": [
+    { "fromPath": "/my-path/test", "toUrl": "https://my-app.dev.intern.nav.no", "preserveFromPath": false }
+  ]
 }
 ```
 
@@ -47,10 +44,6 @@ services:
     environment:
       JSON_CONFIG: >
         {
-          "proxy": {
-            "proxies": [
-              ...
-            ]
-          }
+          "proxies": [...]
         }
 ```

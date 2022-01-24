@@ -1,5 +1,4 @@
-import { strToNumber } from '../utils'
-import { JsonConfig } from '../utils/config-utils';
+import { JsonConfig } from './app-config-resolver';
 
 const DEFAULT_PORT = 8080
 
@@ -7,9 +6,9 @@ export interface BaseConfig {
 	port: number;
 }
 
-export function resolveBaseConfig(jsonConfig: JsonConfig | undefined): BaseConfig {
+export function resolveBaseConfig(jsonConfig: JsonConfig.Config | undefined): BaseConfig {
 	const config: Partial<BaseConfig> = {
-		port: strToNumber(jsonConfig?.port),
+		port: jsonConfig?.port
 	}
 
 	if (!config.port) {
