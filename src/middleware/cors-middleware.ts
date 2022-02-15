@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 
 const corsAllowHeaders = [
-	'nav-consumer-id'
+	'nav-consumer-id',
+	'authorization'
 ];
 
 export function corsMiddleware(): (req: Request, res: Response, next: NextFunction) => void {

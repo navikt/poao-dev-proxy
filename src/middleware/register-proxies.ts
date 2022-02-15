@@ -7,17 +7,15 @@ import * as http from 'http';
 import type * as httpProxy from 'http-proxy';
 
 export function registerProxies(app: Application, appConfig: AppConfig) {
-	const contextPath = '/'
-
 	appConfig.proxy.proxies.forEach(proxy => {
-		app.use(contextPath, createProxy(contextPath, proxy))
+		app.use(proxy.fromPath, createProxy(proxy))
 	})
 }
 
-function createProxy(contextPath: string, proxy: Proxy) {
-	return createProxyMiddleware(contextPath, {
+function createProxy(proxy: Proxy) {
+	return createProxyMiddleware(proxy.fromPath, {
 		target: proxy.toUrl,
-		logLevel: 'error',
+		logLevel: 'debug',
 		changeOrigin: true,
 		selfHandleResponse: true,
 		pathRewrite: proxy.preserveFromPath

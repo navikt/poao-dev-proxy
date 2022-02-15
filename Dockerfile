@@ -14,8 +14,8 @@ LABEL org.opencontainers.image.title=poao-dev-proxy
 
 WORKDIR /app
 
-COPY --from=builder /app/build .
 COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/build .
 
 USER node
 
